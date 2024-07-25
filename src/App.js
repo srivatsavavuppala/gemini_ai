@@ -22,7 +22,7 @@ function App() {
         data: {
           contents: updatedMessages.map((msg) => ({
             parts: [{ text: msg.content }],
-            role: msg.role // Ensure role is included correctly
+            role: msg.role 
           }))
         }
       });
