@@ -1,26 +1,56 @@
+/* General Styles */
 body {
   font-family: "Arial", sans-serif;
-  background-color: #ffffff;
   margin: 0;
   padding: 0;
   height: 100%; 
   display: flex;
-  flex-direction: row;
+  flex-direction: column; /* Changed to column to fit new layout */
   justify-content: center;
   align-items: center;
 }
 
+/* Dark and Light Modes */
+body.dark-mode {
+  background-color: #121212; /* Dark background */
+  color: #ffffff; /* Light text */
+}
+
+body.light-mode {
+  background-color: #ffffff;
+  color: #000000;
+}
+
+.app {
+  display: flex;
+  flex-direction: column;
+  width: 100vw;
+  height: 100vh;
+  position: relative;
+}
+
+/* Chat Container */
 .chat-container {
   flex: 1;
-  height: 100vh;
-  background-color: #ffffff;
+  height: 100%;
+  width: 100%;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  width: 100vw; /* Full viewport width */
+  position: relative;
 }
 
+/* Dark Mode Adjustments */
+.dark-mode .chat-container {
+  background-color: #1e1e1e; /* Slightly lighter dark background */
+}
+
+.light-mode .chat-container {
+  background-color: #ffffff; /* Light background */
+}
+
+/* Chat Window */
 .chat-window {
   flex: 1;
   padding: 20px;
@@ -29,6 +59,7 @@ body {
   flex-direction: column;
 }
 
+/* Messages */
 .message {
   max-width: 70%;
   margin-bottom: 10px;
@@ -38,32 +69,73 @@ body {
   word-wrap: break-word;
 }
 
-.message.user {
+.message.user-message {
   align-self: flex-end;
-  background-color: #007bff; /* User message background */
+  background-color: #007bff; 
   color: #ffffff;
   border-bottom-right-radius: 0;
   flex-direction: row-reverse;
+
 }
 
-.message.model {
+.message.model-message {
   align-self: flex-start;
-  background-color: #e0e0e0; /* Bot message background color */
-  color: #000;
+  background-color: #e0e0e0; 
+  color: #000000;
   border-bottom-left-radius: 0;
-}
-.message .emoji {
-  font-size: 20px;
-  margin: 0 10px;
+  position: relative;
 }
 
+.dark-mode .message.model-message {
+  background-color: #333333; 
+  color: #ffffff;
+}
+
+.light-mode .message.model-message {
+  background-color: #e0e0e0; 
+  color: #000000;
+}
+
+.message .subscript {
+  position: absolute;
+  bottom: -20px; /* Adjust as needed to fit below the message */
+  text-align: relative;
+  font-size: 12px; /* Smaller font size for subscript */
+  color: #888; 
+}
+
+.message.user-message.subscript{
+  right: 10vmax;
+  /* left: auto; */
+  /* text-align: right; */
+}
+.message.model-message.subscript{
+  left: 10px;
+  right: auto;
+  text-align: left;
+}
+.dark-mode .message .subscript {
+  color: #bbb;
+}
+
+/* Input Container */
 .input-container {
   display: flex;
-  border-top: 1px solid #ccc;
+  border-top: 1px solid transparent;
   padding: 10px;
   border-radius: 4px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  background-color: #fff;
+  background-color: #ffffff;
+}
+
+.dark-mode .input-container {
+  background-color: transparent;
+  border-top: 1px solid transparent;
+}
+
+.light-mode .input-container {
+  background-color: transparent;
+  border-top: 1px solid transparent;
 }
 
 input[type="text"] {
@@ -73,7 +145,18 @@ input[type="text"] {
   font-size: 16px;
   border-radius: 20px;
   outline: none;
+  background-color: #888;
+  color: #000000;
+}
+
+.dark-mode input[type="text"] {
+  background-color: #333333;
+  color: #ffffff; /* Ensure text color is white in dark mode */
+}
+
+.light-mode input[type="text"] {
   background-color: #ffffff;
+  color: #000000; /* Ensure text color is black in light mode */
 }
 
 button {
@@ -88,6 +171,51 @@ button {
   transition: background-color 0.3s;
 }
 
-button:hover {
+/* button:hover {
   background-color: #0056b3;
+} */
+
+/* Blinking Cursor */
+.cursor {
+  display: inline-block;
+  width: 2px;
+  height: 1em;
+  background-color: black;
+  animation: blink 1s step-start infinite;
+  margin-left: 2px; /* Adjust as needed */
+}
+
+.dark-mode .cursor {
+  background-color: white;
+}
+
+@keyframes blink {
+  from, to {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+}
+
+/* Dark Mode Toggle Button */
+.dark-mode-toggle {
+  position: absolute;
+  top: 10px; /* Adjust position as needed */
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: transparent;
+  z-index: 1000;
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+}
+
+.dark-mode .dark-mode-toggle {
+  color: #ffffff; 
+}
+
+.light-mode .dark-mode-toggle {
+  color: #000000; 
 }
