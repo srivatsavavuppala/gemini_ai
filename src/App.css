@@ -50,10 +50,17 @@ body.light-mode {
 .chat-window {
   flex: 1;
   padding: 20px;
-  overflow-y: auto;
+  overflow-y: scroll;
   display: flex;
   flex-direction: column;
+  -ms-overflow-style: none;  /* Internet Explorer 10+ */
+  scrollbar-width: none;  /* Firefox */
 }
+
+.chat-window::-webkit-scrollbar {
+  display: none;  /* Safari and Chrome */
+}
+
 
 /* Messages */
 .message {
@@ -101,9 +108,8 @@ body.light-mode {
 }
 
 .message.user-message.subscript{
-  right: 10vmax;
-  /* left: auto; */
-  /* text-align: right; */
+  right: 10px;
+
 }
 .message.model-message.subscript{
   left: 10px;
@@ -151,7 +157,7 @@ input[type="text"] {
 
 .light-mode input[type="text"] {
   background-color: #ffffff;
-  color: #000000; /* Ensure text color is black in light mode */
+  color: #000000;
 }
 
 button {
@@ -191,7 +197,7 @@ button {
 
 .dark-mode-toggle {
   position: absolute;
-  top: 10px; /* Adjust position as needed */
+  top: 10px; 
   left: 50%;
   transform: translateX(-50%);
   background-color: transparent;
@@ -208,4 +214,19 @@ button {
 
 .light-mode .dark-mode-toggle {
   color: #000000; 
+}
+
+.spinner {
+  border: 2px solid #f3f3f3; /* Light grey */
+  border-top: 2px solid #007bff; /* Blue */
+  border-radius: 50%;
+  width: 16px;
+  height: 16px;
+  animation: spin 1s linear infinite;
+  display: inline-block;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }

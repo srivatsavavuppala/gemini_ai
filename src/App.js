@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import './App.css';
 
@@ -9,6 +9,7 @@ function App() {
   const [displayText, setDisplayText] = useState("");
   const [typing, setTyping] = useState(false);
   const [darkMode, setDarkMode] = useState(false);
+  const chatWindowRef = useRef(null);
 
   const handleSend = async () => {
     if (!input.trim()) return;
@@ -78,13 +79,19 @@ function App() {
     setDarkMode(!darkMode);
   };
 
+  useEffect(() => {
+    if (chatWindowRef.current) {
+      chatWindowRef.current.scrollTop = chatWindowRef.current.scrollHeight;
+    }
+  }, [messages]);
+
   return (
     <div className={`app ${darkMode ? 'dark-mode' : 'light-mode'}`}>
       <button className="dark-mode-toggle" onClick={toggleDarkMode}>
-        {darkMode ? "🌕" : "🌞"}
+        {darkMode ? "🥷" : "👨‍⚕️"}
       </button>
       <div className="chat-container">
-        <div className="chat-window">
+        <div className="chat-window" ref={chatWindowRef}>
           {messages.map((msg, index) => (
             <div key={index} className={`message ${msg.role}-message`}>
               {msg.role === "model" && index === messages.length - 1 && typing ? (
@@ -110,7 +117,11 @@ function App() {
             disabled={loading} 
           />
           <button onClick={handleSend} disabled={loading}>
-            {loading ? "Sending..." : "Send"}
+            {loading ? (
+              <span className="spinner"></span>
+            ) : (
+              "Send"
+            )}
           </button>
         </div>
       </div>
