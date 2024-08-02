@@ -57,6 +57,7 @@ body.light-mode {
   scrollbar-width: none;  /* Firefox */
 }
 
+
 .chat-window::-webkit-scrollbar {
   display: none;  /* Safari and Chrome */
 }
@@ -229,4 +230,39 @@ button {
 @keyframes spin {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
+}
+
+.blinking-light{
+  position: fixed;
+  top: 10px;
+  left: 10px;
+  z-index: 999;
+}
+
+.blinking-light .dot{
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  /* background-color: green; */
+  animation: blink 1s infinite;
+}
+
+.blinking-light .dot.green{
+  background-color: green;
+}
+.blinking-light .dot.red{
+  background-color: red;
+  animation: blinke-red 1s infinite;
+}
+@keyframes blink {
+  50%{
+    opacity: 0;
+  }
+  
+}
+@keyframes blink-red {
+  50%{
+    opacity: 0.5;
+  }
+  
 }

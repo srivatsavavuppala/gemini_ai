@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import './App.css';
+import BlinkingLight from "./widgets/BlinkingLight";
 
 function App() {
   const [messages, setMessages] = useState([]);
@@ -9,6 +10,7 @@ function App() {
   const [displayText, setDisplayText] = useState("");
   const [typing, setTyping] = useState(false);
   const [darkMode, setDarkMode] = useState(false);
+  const [isApiActive, setIsApiActive] = useState(false);
   const chatWindowRef = useRef(null);
 
   const handleSend = async () => {
@@ -19,7 +21,7 @@ function App() {
     setMessages(updatedMessages);
     setLoading(true);
     setTyping(true);
-
+    setIsApiActive(true)
     try {
       const response = await axios.post(
         `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=AIzaSyCMYGrnH7BFaJV5aKCELjj-t66cel8zLf4`,
@@ -36,6 +38,13 @@ function App() {
 
       setMessages((prevMessages) => [...prevMessages, botMessage]);
       animateTyping(botResponse);
+
+      if(botResponse.trim().length>0){
+        setIsApiActive(true);
+      }
+      else{
+        setIsApiActive(false);
+      }
     } catch (error) {
       console.error("Error sending message:", error.response ? error.response.data : error.message);
       const errorMessage = {
@@ -44,7 +53,9 @@ function App() {
       };
       setMessages((prevMessages) => [...prevMessages, errorMessage]);
       setTyping(false);
+      setIsApiActive(false)
     }
+    // add a blinking green light to show the api is active if inactive show red light
 
     setLoading(false);
     setInput(""); 
@@ -87,9 +98,11 @@ function App() {
 
   return (
     <div className={`app ${darkMode ? 'dark-mode' : 'light-mode'}`}>
+      <BlinkingLight isActive={isApiActive} color={isApiActive ? 'green' : 'red'}/>
       <button className="dark-mode-toggle" onClick={toggleDarkMode}>
         {darkMode ? "🥷" : "👨‍⚕️"}
       </button>
+      
       <div className="chat-container">
         <div className="chat-window" ref={chatWindowRef}>
           {messages.map((msg, index) => (
@@ -113,6 +126,7 @@ function App() {
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyPress={handleKeyPress}
+            
             placeholder="Type your message..."
             disabled={loading} 
           />
