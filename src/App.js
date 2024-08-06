@@ -19,7 +19,10 @@ function App() {
   const { transcript, listening, resetTranscript, browserSupportsSpeechRecognition } = useSpeechRecognition();
 
   useEffect(() => {
-    if (!listening && transcript.trim()) {
+    if (listening) {
+      setInput("");
+      animateLiveTranscription(transcript);
+    } else if (!listening && transcript.trim()) {
       handleSend(transcript);
     }
   }, [listening, transcript]);
@@ -64,8 +67,8 @@ function App() {
     }
 
     setLoading(false);
-    setInput(""); // Clear the input text box
-    resetTranscript(); // Clear the transcript data
+    setInput(""); 
+    resetTranscript(); 
   };
 
   const animateTyping = (text) => {
@@ -86,11 +89,22 @@ function App() {
     typeNextCharacter();
   };
 
+  const animateLiveTranscription = (text) => {
+    let i = 0;
+    const animate = () => {
+      if (i < text.length) {
+        setInput((prev) => prev + text.charAt(i));
+        i++;
+        setTimeout(animate, 200);
+      }
+    };
+    animate();
+  };
   const handleKeyPress = (e) => {
     if (e.key === "Enter" && !loading) {
       e.preventDefault();
       handleSend(input);
-      setInput(""); // Clear the input text box
+      setInput(""); 
     }
   };
 
@@ -105,7 +119,7 @@ function App() {
   }, [messages]);
 
   const handleSpeechStart = () => {
-    resetTranscript(); // Ensure transcript is reset when starting speech recognition
+    resetTranscript(); 
     SpeechRecognition.startListening({ continuous: true });
   };
 
@@ -120,9 +134,9 @@ function App() {
   return (
     <div className={`app ${darkMode ? 'dark-mode' : 'light-mode'}`}>
       <BlinkingLight isActive={isApiActive} color={isApiActive ? 'green' : 'red'} />
-      <DarkModeToggle darkMode={darkMode} toggleDarkMode={toggleDarkMode} />
+      <DarkModeToggle darkMode={darkMode} toggleDarkMode={toggleDarkMode} /> {/* Updated line */}
       <div className="chat-container">
-        <ChatWindow messages={messages} typing={typing} displayText={displayText} chatWindowRef={chatWindowRef} />
+        <ChatWindow messages={messages} typing={typing} displayText={displayText} chatWindowRef={chatWindowRef} /> {/* Updated line */}
         <InputContainer
           input={input}
           setInput={setInput}
@@ -131,7 +145,7 @@ function App() {
           handleSpeechEnd={handleSpeechEnd}
           listening={listening}
           loading={loading}
-        />
+        /> 
       </div>
     </div>
   );

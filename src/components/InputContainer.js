@@ -15,7 +15,7 @@ const InputContainer = ({ input, setInput, handleKeyPress, handleSpeechStart, ha
         className={`mic-button ${listening ? 'listening' : ''}`}
         onClick={listening ? handleSpeechEnd : handleSpeechStart}
       >
-        {listening ? "🎤" : "🎙️"}
+        {listening ? "⛔" : "🎙️"}
       </button>
     </div>
   );
