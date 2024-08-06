@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
-import './App.css';
+import './css/App.css';
+
 import BlinkingLight from "./widgets/BlinkingLight";
 import ChatWindow from "./components/ChatWindow";
 import InputContainer from "./components/InputContainer";

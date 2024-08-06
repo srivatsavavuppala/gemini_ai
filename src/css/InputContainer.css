@@ -1,0 +1,40 @@
+.input-container {
+    display: flex;
+    align-items: center;
+    border-top: 1px solid transparent;
+    padding: 10px;
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    background-color: #ffffff;
+  }
+  
+  input[type="text"] {
+    flex: 1;
+    padding: 10px;
+    font-size: 16px;
+    border-radius: 20px;
+    outline: none;
+    border: 1px solid #ccc; /* Adjust as needed */
+  }
+  
+  button {
+    border: none;
+    background-color: #63656600;
+    color: #ffffff;
+    padding: 10px 15px;
+    margin-left: 10px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s;
+  }
+  
+  button.disabled {
+    filter: blur(2px);
+    cursor: not-allowed;
+  }
+  
+  button.disabled:hover {
+    background-color: #63656600;
+  }
+  

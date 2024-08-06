@@ -53,13 +53,12 @@ body.light-mode {
   overflow-y: scroll;
   display: flex;
   flex-direction: column;
-  -ms-overflow-style: none;  /* Internet Explorer 10+ */
-  scrollbar-width: none;  /* Firefox */
+ 
 }
 
 
 .chat-window::-webkit-scrollbar {
-  display: none;  /* Safari and Chrome */
+  display: none;  
 }
 
 
@@ -79,6 +78,7 @@ body.light-mode {
   color: #ffffff;
   border-bottom-right-radius: 0;
   flex-direction: row-reverse;
+  padding: 10px 20px;
 
 }
 
@@ -92,7 +92,7 @@ body.light-mode {
 
 .dark-mode .message.model-message {
   background-color: #333333; 
-  color: #ffffff;
+  color: #fdfdfd;
 }
 
 .light-mode .message.model-message {
@@ -108,20 +108,32 @@ body.light-mode {
   color: #888; 
 }
 
-.message.user-message.subscript{
-  right: 10px;
+.message.user-message .subscript {
+  position: absolute;
+  bottom: -20px;
+  right: 10px; 
+  text-align: right; 
+  font-size: 12px;
+  color: #888;
+}
 
-}
-.message.model-message.subscript{
+
+.message.model-message.subscript {
+  position: absolute;
+  bottom: -20px;
   left: 10px;
-  right: auto;
-  text-align: left;
+  right: auto; /* Ensure it doesn't get pushed to the right */
+  text-align: left; /* Align text to the left */
+  font-size: 12px;
+  color: #888; 
 }
+
 .dark-mode .message .subscript {
   color: #bbb;
 }
 
 .input-container {
+  position: relative;
   display: flex;
   border-top: 1px solid transparent;
   padding: 10px;
@@ -142,13 +154,16 @@ body.light-mode {
 
 input[type="text"] {
   flex: 1;
-  border: none;
+  border: 5;
+  box-sizing: border-box;
   padding: 10px;
   font-size: 16px;
   border-radius: 20px;
   outline: none;
   background-color: #888;
   color: #000000;
+  margin-right: 90px;
+  margin-left: 90px;
 }
 
 .dark-mode input[type="text"] {
@@ -160,10 +175,32 @@ input[type="text"] {
   background-color: #ffffff;
   color: #000000;
 }
+.mic-button {
+  position: absolute;
+  right: 10px; /* Adjust as needed */
+  border: 2px;
+  background-color: transparent;
+  color: #ffffff;
+  font-size: 24px; /* Adjust size as needed */
+  cursor: pointer;
+  /* z-index: 1; */
+  margin-right: 90px;
+  margin-left: 90px;
+  margin-bottom: 90px;
+  transform: translateY(83%);
+  /* transform: translateX(15%); */
+}
 
+.dark-mode .mic-button {
+  color: #ffffff;
+}
+
+.light-mode .mic-button {
+  color: #000000;
+}
 button {
   border: none;
-  background-color: #007bff;
+  background-color: #63656600;
   color: #ffffff;
   padding: 10px 15px;
   margin-left: 10px;
