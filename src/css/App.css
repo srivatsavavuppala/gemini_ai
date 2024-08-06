@@ -188,7 +188,19 @@ input[type="text"] {
   margin-left: 90px;
   margin-bottom: 90px;
   transform: translateY(83%);
+  transition: opacity 0.3s, filter 0.3s;
+  cursor: pointer;
   /* transform: translateX(15%); */
+}
+
+.mic-button.listening {
+  color: green; /* Indicates listening state */
+}
+
+.mic-button.disabled {
+  opacity: 0.5;
+  filter: grayscale(80%);
+  cursor: not-allowed;
 }
 
 .dark-mode .mic-button {

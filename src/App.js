@@ -22,7 +22,8 @@ function App() {
   useEffect(() => {
     if (listening) {
       setInput("");
-      animateLiveTranscription(transcript);
+      // Commenting out the live transcription feature
+      // animateLiveTranscription(transcript);
     } else if (!listening && transcript.trim()) {
       handleSend(transcript);
     }
@@ -90,17 +91,17 @@ function App() {
     typeNextCharacter();
   };
 
-  const animateLiveTranscription = (text) => {
-    let i = 0;
-    const animate = () => {
-      if (i < text.length) {
-        setInput((prev) => prev + text.charAt(i));
-        i++;
-        setTimeout(animate, 200);
-      }
-    };
-    animate();
-  };
+  // const animateLiveTranscription = (text) => {
+  //   let i = 0;
+  //   const animate = () => {
+  //     if (i < text.length) {
+  //       setInput((prev) => prev + text.charAt(i));
+  //       i++;
+  //       setTimeout(animate, 200);
+  //     }
+  //   };
+  //   animate();
+  // };
   const handleKeyPress = (e) => {
     if (e.key === "Enter" && !loading) {
       e.preventDefault();
