@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import axios from "axios";
 import './css/App.css';
 
@@ -16,21 +16,21 @@ function App() {
   const [typing, setTyping] = useState(false);
   const [darkMode, setDarkMode] = useState(false);
   const [isApiActive, setIsApiActive] = useState(false);
+  const [stopButtonVisible, setStopButtonVisible] = useState(false);
   const chatWindowRef = useRef(null);
   const { transcript, listening, resetTranscript, browserSupportsSpeechRecognition } = useSpeechRecognition();
+  const [timer, setTimer] = useState(null);
 
-  useEffect(() => {
-    if (listening) {
-      setInput("");
-      // Commenting out the live transcription feature
-      // animateLiveTranscription(transcript);
-    } else if (!listening && transcript.trim()) {
-      handleSend(transcript);
-    }
-  }, [listening, transcript]);
+  const debounce = (func, delay) => {
+    let timer;
+    return (...args) => {
+      clearTimeout(timer);
+      timer = setTimeout(() => func(...args), delay);
+    };
+  };
 
-  const handleSend = async (messageContent) => {
-    if (!messageContent.trim()) return;
+  const handleSend = useCallback(debounce(async (messageContent) => {
+    if (!messageContent.trim() || messages.some(msg => msg.content === messageContent && msg.role === "user")) return;
 
     const userMessage = { role: "user", content: messageContent };
     const updatedMessages = [...messages, userMessage];
@@ -54,6 +54,7 @@ function App() {
       const botMessage = { role: "model", content: botResponse };
 
       setMessages((prevMessages) => [...prevMessages, botMessage]);
+      
       animateTyping(botResponse);
 
       setIsApiActive(botResponse.trim().length > 0);
@@ -64,44 +65,55 @@ function App() {
         content: "Sorry - Something went wrong. Please try again!"
       };
       setMessages((prevMessages) => [...prevMessages, errorMessage]);
-      setTyping(false);
-      setIsApiActive(false);
+    } finally {
+      setLoading(false);
+      setInput(""); 
+      resetTranscript(); 
     }
+  }, 500), [messages]);
 
-    setLoading(false);
-    setInput(""); 
-    resetTranscript(); 
-  };
+  useEffect(() => {
+    if (listening) {
+      if (timer) {
+        clearTimeout(timer);
+      }
+      const newTimer = setTimeout(() => {
+        handleSpeechEnd();
+      }, 3000);
+      setTimer(newTimer);
+    } else if (!listening && transcript.trim()) {
+      handleSend(transcript);
+    }
+    return () => clearTimeout(timer); // Clean up timer on component unmount
+  }, [listening, transcript]);
+
+  useEffect(() => {
+    if (chatWindowRef.current) {
+      chatWindowRef.current.scrollTop = chatWindowRef.current.scrollHeight;
+    }
+  }, [messages]);
 
   const animateTyping = (text) => {
     let i = 0;
-    setDisplayText(text.charAt(0)); 
+    setDisplayText(" "); 
     setTyping(true);
-
+  
     const typeNextCharacter = () => {
-      if (i < text.length - 1) {
-        i++;
+      if (i < text.length) {
         setDisplayText((prev) => prev + text.charAt(i));
-        setTimeout(typeNextCharacter, 25);
+        i++;
+        requestAnimationFrame(() => {
+          setTimeout(typeNextCharacter, 25);
+        });
       } else {
         setTyping(false);
       }
     };
-
+  
     typeNextCharacter();
   };
-
-  // const animateLiveTranscription = (text) => {
-  //   let i = 0;
-  //   const animate = () => {
-  //     if (i < text.length) {
-  //       setInput((prev) => prev + text.charAt(i));
-  //       i++;
-  //       setTimeout(animate, 200);
-  //     }
-  //   };
-  //   animate();
-  // };
+  
+  
   const handleKeyPress = (e) => {
     if (e.key === "Enter" && !loading) {
       e.preventDefault();
@@ -114,19 +126,21 @@ function App() {
     setDarkMode(!darkMode);
   };
 
-  useEffect(() => {
-    if (chatWindowRef.current) {
-      chatWindowRef.current.scrollTop = chatWindowRef.current.scrollHeight;
-    }
-  }, [messages]);
-
   const handleSpeechStart = () => {
     resetTranscript(); 
     SpeechRecognition.startListening({ continuous: true });
   };
 
   const handleSpeechEnd = () => {
+    if (timer) {
+      clearTimeout(timer);
+      setTimer(null);
+    }
     SpeechRecognition.stopListening();
+    setStopButtonVisible(false);
+    if (transcript.trim()) {
+      handleSend(transcript);
+    }
   };
 
   if (!browserSupportsSpeechRecognition) {
@@ -136,9 +150,9 @@ function App() {
   return (
     <div className={`app ${darkMode ? 'dark-mode' : 'light-mode'}`}>
       <BlinkingLight isActive={isApiActive} color={isApiActive ? 'green' : 'red'} />
-      <DarkModeToggle darkMode={darkMode} toggleDarkMode={toggleDarkMode} /> {/* Updated line */}
+      <DarkModeToggle darkMode={darkMode} toggleDarkMode={toggleDarkMode} />
       <div className="chat-container">
-        <ChatWindow messages={messages} typing={typing} displayText={displayText} chatWindowRef={chatWindowRef} /> {/* Updated line */}
+        <ChatWindow messages={messages} typing={typing} displayText={displayText} chatWindowRef={chatWindowRef} />
         <InputContainer
           input={input}
           setInput={setInput}
@@ -147,7 +161,8 @@ function App() {
           handleSpeechEnd={handleSpeechEnd}
           listening={listening}
           loading={loading}
-        /> 
+          stopButtonVisible={stopButtonVisible} // Pass stopButtonVisible state
+        />
       </div>
     </div>
   );

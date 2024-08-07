@@ -1,5 +1,5 @@
 import React from 'react';
-import '../css/InputContainer.css'; // Correct path to your CSS file
+import '../css/InputContainer.css'; 
 
 const InputContainer = ({
   input,
@@ -10,7 +10,11 @@ const InputContainer = ({
   listening,
   loading,
 }) => {
-  const isInputDisabled = listening || loading; // Disable input while recording or loading
+  // Determine if the input should be disabled based on listening or loading
+  const isInputDisabled = listening || loading;
+
+  // Determine if the mic button should be disabled
+  const isMicButtonDisabled = loading;
 
   return (
     <div className="input-container">
@@ -20,12 +24,12 @@ const InputContainer = ({
         onChange={(e) => setInput(e.target.value)}
         onKeyDown={handleKeyPress}
         placeholder="Type your message..."
-        disabled={isInputDisabled} // Disable input based on state
+        disabled={isInputDisabled}
       />
       <button
         className={`mic-button ${listening ? 'listening' : ''} ${input.trim() === "" ? '' : 'disabled'}`}
         onClick={listening ? handleSpeechEnd : handleSpeechStart}
-        disabled={loading} // Disable button if loading
+        disabled={isMicButtonDisabled}
       >
         {listening ? "⛔" : "🎙️"}
       </button>
